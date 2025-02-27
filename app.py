@@ -55,17 +55,21 @@ st.subheader("Convert Units Easily")  # ✅ This will be blue now
 # 📌 Sidebar for Navigation
 st.sidebar.header("Select Conversion Type")
 conversion_type = st.sidebar.selectbox(
-    "Choose Conversion", ["Length", "Weight", "Temperature"]
+    "Choose Conversion", ["Length", "Weight", "Temperature", "Pressure", "Speed", "Time"]
 )
 
 # 📏 Conversion Function
 def convert_units(value, from_unit, to_unit):
-    if conversion_type == "Length":
-        conversion_factors = {"meters": 1, "kilometers": 0.001, "miles": 0.000621371}
-        return value * (conversion_factors[to_unit] / conversion_factors[from_unit])
-    elif conversion_type == "Weight":
-        conversion_factors = {"grams": 1, "kilograms": 0.001, "pounds": 0.00220462}
-        return value * (conversion_factors[to_unit] / conversion_factors[from_unit])
+    conversion_factors = {
+        "Length": {"meters": 1, "kilometers": 0.001, "miles": 0.000621371},
+        "Weight": {"grams": 1, "kilograms": 0.001, "pounds": 0.00220462},
+        "Speed": {"meters per second": 1, "kilometers per hour": 3.6, "miles per hour": 2.23694},
+        "Pressure": {"pascals": 1, "kilopascals": 0.001, "bar": 0.00001, "psi": 0.000145038}
+    }
+    
+    if conversion_type in conversion_factors:
+        return value * (conversion_factors[conversion_type][to_unit] / conversion_factors[conversion_type][from_unit])
+    
     elif conversion_type == "Temperature":
         if from_unit == "Celsius" and to_unit == "Fahrenheit":
             return (value * 9 / 5) + 32
@@ -82,7 +86,10 @@ units = {
     "Length": ["meters", "kilometers", "miles"],
     "Weight": ["grams", "kilograms", "pounds"],
     "Temperature": ["Celsius", "Fahrenheit"],
+    "Pressure": ["pascals", "kilopascals", "bar", "psi"],
+    "Speed": ["meters per second", "kilometers per hour", "miles per hour"]
 }
+
 from_unit = st.selectbox("From:", units[conversion_type])
 to_unit = st.selectbox("To:", units[conversion_type])
 
@@ -92,9 +99,12 @@ if st.button("Convert"):
     st.success(f"Converted Value: {result:.2f} {to_unit}")
 
 # 📌 Footer
-st.markdown("""
+st.markdown(
+    """
     ---
     <p style="text-align: center;">
         👨‍💻 <b>Developed by <span style="color: rgb(12, 83, 237);">Ummay Kulsoom</span></b> | 🚀 Luxury Streamlit Unit Converter
     </p>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
